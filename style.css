@@ -1,0 +1,294 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+body {
+    background: #fce4ec; /* Warna background lebih soft pink */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden; /* Biar ga ada scroll pas animasi */
+}
+
+/* --- STYLE AMPLOP --- */
+.container {
+    position: relative;
+    cursor: pointer; /* Biar kursor jadi tangan */
+}
+
+.valentines {
+    position: relative;
+    width: 250px;
+    height: 180px;
+    /* Hapus hover effect lama di sini */
+}
+
+/* Bagian belakang amplop */
+.envelope {
+    width: 250px;
+    height: 180px;
+    background: #f48fb1; /* Pink medium */
+    position: absolute;
+    bottom: 0;
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    z-index: 1;
+}
+
+/* Segitiga Flap Atas (Terbuka) */
+.flap-top {
+    position: absolute;
+    top: -80px; /* Geser ke atas */
+    left: 0;
+    width: 0;
+    height: 0;
+    border-left: 125px solid transparent;
+    border-right: 125px solid transparent;
+    border-bottom: 90px solid #f06292; /* Pink lebih gelap dikit buat flap belakang */
+    z-index: 1; /* Di belakang kartu */
+}
+
+/* Bagian Depan Amplop (Kantong V) */
+.front {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    z-index: 3;
+    /* Teknik border untuk bikin bentuk amplop V */
+    border-left: 125px solid #f8bbd0; /* Pink muda buat sisi */
+    border-right: 125px solid #f8bbd0;
+    border-top: 95px solid transparent; /* Transparan biar kartu keliatan */
+    border-bottom: 85px solid #f48fb1; /* Pink medium buat bawah */
+    border-radius: 0 0 10px 10px;
+}
+
+/* Kartu Kecil di dalem */
+.card {
+    position: absolute;
+    width: 200px;
+    height: 130px;
+    background: #fff; /* Warna kertas agak krem kayak referensi */
+    bottom: 25px; /* Posisi awal di dalam amplop */
+    left: 25px;
+    border-radius: 5px;
+    box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
+    z-index: 2; /* Di antara flap belakang dan flap depan */
+    transition: all 3s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Animasi smooth */
+    border: 2px dotted #f48fb1; /* Border putus-putus kayak referensi */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Class ini akan ditambahkan via Javascript pas diklik */
+.card.fly-out {
+    transform: translateY(-600px) rotate(-5deg); /* Terbang jauh ke atas */
+    opacity: 0; /* Menghilang perlahan pas terbang */
+}
+
+.text {
+    text-align: center;
+    font-size: 16px;
+    color: #880e4f;
+    font-weight: 600;
+    font-style: italic; /* Biar agak mirip tulisan tangan */
+}
+
+/* Hapus heart merah besar, ganti heart kecil di teks aja kalo mau, 
+   tapi di referensi ga ada heart besar di bawah */
+.heart {
+    display: none; 
+}
+
+.shadow {
+    width: 220px;
+    height: 25px;
+    background: rgba(0,0,0,0.15);
+    position: absolute;
+    bottom: -35px;
+    left: 50%;
+    transform: translateX(-50%);
+    filter: blur(8px);
+    border-radius: 50%;
+}
+
+
+/* --- STYLE MODAL LAYAR PENUH (Long Text) --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(252, 228, 236, 0.95); /* Background transparan pink */
+    z-index: 100; /* Paling depan */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+/* Class ini ditambahkan JS buat nampilin modal */
+.modal-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-content {
+    background: #fff;
+    width: 90%;
+    max-width: 500px; /* Maksimal lebar biar enak dibaca di HP */
+    max-height: 80vh; /* Maksimal tinggi 80% layar */
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    position: relative;
+    overflow-y: auto; /* Biar bisa discroll kalo teksnya panjang banget */
+    border: 3px solid #f48fb1;
+    text-align: center;
+}
+
+.long-text-container p {
+    margin-bottom: 15px;
+    color: #333;
+    line-height: 1.6;
+    font-size: 14px;
+    text-align: left;
+}
+
+.modal-content h2 {
+    color: #880e4f;
+    margin-bottom: 20px;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 28px;
+    color: #f48fb1;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.close-btn:hover {
+    color: #d81b60;
+}
+/* --- STYLE TOMBOL LANJUT --- */
+.action-btn {
+    background-color: #f48fb1; /* Warna pink utama */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 20px;
+    font-size: 16px;
+    font-weight: 600;
+    transition: background-color 0.3s;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.action-btn:hover {
+    background-color: #d81b60; /* Warna pink lebih gelap saat di-hover */
+    transform: translateY(-1px);
+}
+
+/* style.css */
+
+.modal-content {
+    position: relative; /* HARUS ADA */
+    /* ... properti modal-content lainnya ... */
+}
+
+.tombol.tidak {
+    position: absolute; /* HARUS ADA */
+    /* Tambahkan 'right' dan 'bottom' agar posisi awal di pojok kanan bawah */
+    right: 20px; 
+    bottom: 20px;
+    transition: all 0.2s ease-out; 
+}
+
+.love {
+    position: absolute;
+    right: 43%;
+    bottom: 40%;
+    z-index: 3;
+    
+}
+
+/* style.css */
+
+/* Kontainer untuk kedua tombol */
+.button-group {
+    /* Atur posisi dan margin agar berada di bawah teks */
+    width: 100%;
+    display: flex;
+    justify-content: space-between; /* Untuk memisahkan tombol */
+    align-items: center;
+    margin-top: 30px; /* Tambahkan sedikit jarak dari teks di atasnya */
+    
+    /* PENTING: Atur `position: relative` agar `absolute` tombol "Enggak" 
+       di sini hanya berlaku di posisi awal, lalu kita pindahkan dengan JS.
+       Namun, untuk skenario "kabur", kita harus membiarkan tombol "Enggak"
+       lepas dari button-group saat proses kabur dimulai.
+    */
+}
+
+/* Tombol "Next" di modal kedua (kita beri ID agar spesifik) */
+#next-card-btn-2 {
+    /* Tombol ini tetap di kiri */
+    position: relative; 
+    z-index: 10; /* Pastikan tombol "Next" selalu terlihat */
+}
+
+/* Tombol "Enggak" (yang akan bergerak) */
+.tombol.tidak {
+    /* Hapus properti `right` dan `bottom` dari sini */
+    position: absolute; 
+    
+    /* Gunakan posisi yang lebih spesifik untuk posisi awal di dalam modal */
+    /* Kita atur posisinya secara manual agar tidak menumpuk: */
+    left: auto; /* Dihapus */
+    top: auto;  /* Dihapus */
+    
+    /* Atur posisi awal tombol "Enggak" ke kanan bawah yang aman, 
+       mengabaikan tombol "Next" di dalam button-group */
+    right: 20px; 
+    bottom: 30px;
+    
+    transition: all 0.2s ease-out; 
+    z-index: 20; /* Pastikan tombol "Enggak" selalu di atas jika tumpang tindih */
+}
+
+/* Style buat butiran hujan love */
+.heart-rain {
+    position: fixed;
+    top: -10px;
+    font-size: 20px;
+    color: #ff4757;
+    user-select: none;
+    pointer-events: none;
+    z-index: 9999;
+    animation: fall linear forwards;
+}
+
+@keyframes fall {
+    to {
+        transform: translateY(110vh);
+    }
+}
+
+/* Biar GIF di modal pas di tengah */
+.modal-content img {
+    display: block;
+    margin: 0 auto 15px;
+}
